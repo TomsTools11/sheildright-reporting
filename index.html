@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Shieldright LLC &middot; Performance Reports</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="assets/report-dashboard.css">
+</head>
+<style>
+.main{background:var(--gray);}
+.package{background:var(--off);border:1px solid var(--line);border-radius:16px;padding:30px 34px;margin-bottom:30px;}
+.package .eb{font-size:12px;font-weight:800;letter-spacing:.14em;text-transform:uppercase;color:var(--blue);}
+.package h2{font-size:30px;font-weight:900;color:var(--ink);letter-spacing:-.02em;line-height:1.1;margin:12px 0 14px;}
+.package p{font-size:14.5px;color:var(--body);line-height:1.62;max-width:760px;}
+.package p b{color:var(--ink);font-weight:700;}
+.grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:22px;}
+.rcard{position:relative;background:var(--white);border:1px solid var(--line);border-radius:16px;padding:28px 30px 26px;box-shadow:0 4px 16px rgba(0,23,45,.05);display:flex;flex-direction:column;overflow:hidden;transition:transform .2s,box-shadow .2s;}
+.rcard:hover{transform:translateY(-3px);box-shadow:0 16px 38px rgba(0,23,45,.12);}
+.rcard::before{content:"";position:absolute;top:0;left:0;right:0;height:4px;background:var(--blue);}
+.rcard .num{display:inline-flex;align-items:center;justify-content:center;width:36px;height:30px;border-radius:8px;background:#E6F1FD;color:var(--blue);font-size:13px;font-weight:800;}
+.rcard .tag{font-size:11px;font-weight:800;letter-spacing:.07em;text-transform:uppercase;color:var(--muted);margin-top:18px;}
+.rcard h3{font-size:21px;font-weight:800;color:var(--ink);letter-spacing:-.01em;margin:7px 0 10px;}
+.rcard .desc{font-size:13.5px;color:var(--muted);line-height:1.58;flex:1;}
+.rcard .pills{display:flex;flex-wrap:wrap;gap:8px;margin:20px 0 22px;}
+.rcard .pills span{font-size:11.5px;font-weight:600;color:var(--body);background:var(--gray);border-radius:999px;padding:6px 12px;}
+.rcard .open{align-self:flex-start;font-size:14px;font-weight:700;color:var(--blue);text-decoration:none;}
+.botnote{margin-top:30px;font-size:12.5px;color:var(--muted);border-top:1px solid var(--line);padding-top:20px;}
+@media(max-width:900px){.grid{grid-template-columns:1fr;}}
+</style>
+<body>
+<div class="shell">
+  <aside class="side">
+    <img class="logo" src="assets/goal-wordmark-white.png" alt="GOAL">
+    <div class="eb">Performance Reports</div>
+    <h1>Shieldright LLC</h1>
+    <div class="who">Prepared for <b>DK Kumar</b><br>Kingwood, TX<br>Campaign to date &middot; through October 5, 2026</div>
+    <nav><a href="#r1"><span class="dot"></span>Auto (TX) Performance Review</a><a href="#r2"><span class="dot"></span>Home (TX) Performance Review</a></nav>
+    <div class="foot">GOAL Performance Marketing<br>Contact, quote and policy rates are calculated on submitted leads. Inbound calls are reported separately.</div>
+  </aside>
+  <main class="main">
+    <div class="package">
+      <div class="eb">Account Review &middot; October 5, 2026</div>
+      <h2>October 5 review package</h2>
+      <p>Campaign-to-date results for the <b>Auto (TX)</b> and <b>Home (TX)</b> campaigns through <b>October 5, 2026</b>. Combined: 127 leads, 11 inbound calls, 31 contacted, 16 quoted, 0 policies bound, on $1,479.23 ad spend.</p>
+    </div>
+    <div class="grid">
+      <div class="rcard" id="r1">
+        <div class="num">01</div>
+        <div class="tag">Auto (TX) &middot; Campaign to Date</div>
+        <h3>Auto Performance Review</h3>
+        <p class="desc">17,465 shopper searches, 62 leads, 16 contacted, 9 quoted, and 0 policies bound on $760.85 spend.</p>
+        <div class="pills"><span>Key metrics</span><span>Funnel</span><span>Source results</span></div>
+        <a class="open" href="reports/auto-tx-performance-review.html">Open report &rarr;</a>
+      </div>
+      <div class="rcard" id="r2">
+        <div class="num">02</div>
+        <div class="tag">Home (TX) &middot; Campaign to Date</div>
+        <h3>Home Performance Review</h3>
+        <p class="desc">9,913 shopper searches, 65 leads, 15 contacted, 7 quoted, and 0 policies bound on $718.38 spend.</p>
+        <div class="pills"><span>Key metrics</span><span>Funnel</span><span>Source results</span></div>
+        <a class="open" href="reports/home-tx-performance-review.html">Open report &rarr;</a>
+      </div>
+    </div>
+    <div class="botnote">Reports reflect GOAL Platform data and are updated before each review. Each report prints cleanly to PDF.</div>
+  </main>
+</div>
+</body>
+</html>
