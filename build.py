@@ -38,6 +38,15 @@ CAMPAIGNS = {
     ),
 }
 
+A, H = CAMPAIGNS["auto"], CAMPAIGNS["home"]
+KEYS = ["searches", "impr", "clicks", "leads", "calls", "contacted", "quoted", "bound", "spend"]
+BLENDED = dict(
+    title="All Campaigns", slug="blended-campaign-to-date", unit="campaign",
+    **{k: round(A[k] + H[k], 2) for k in KEYS},
+    sources=[(x["title"], x["impr"], x["clicks"], x["leads"], x["calls"], x["contacted"], x["quoted"], x["bound"], x["spend"]) for x in (A, H)],
+    other=("", 0, 0, 0, 0, 0, 0, 0, 0.00), other_n=0,
+)
+
 PALETTE = ["#057BE5", "#2D90EE", "#5BA7E6", "#8CC0EE", "#0A3A6B", "#0C5FB0", "#3A92E0", "#B5D5F3", "#6A7482", "#C5CFDC"]
 
 
@@ -67,6 +76,8 @@ def head(title, css_prefix):
 def report(c):
     t = c["title"]
     L, S = c["leads"], c["spend"]
+    unit = c.get("unit", "source")
+    U, UC = unit, unit.capitalize()
     out = [head(f"{AGENCY} &middot; {t} Performance Review", "../")]
     out.append(f"""<body>
 <div class="shell">
@@ -76,7 +87,7 @@ def report(c):
     <div class="eb">Performance Review &middot; {t}</div>
     <h1>{AGENCY}</h1>
     <div class="who">{WHO}</div>
-    <nav><a href="#s1"><span class="dot"></span>Key metrics</a><a href="#s2"><span class="dot"></span>Conversion funnel</a><a href="#s3"><span class="dot"></span>Performance by source</a><a href="#s4"><span class="dot"></span>Recommendations</a></nav>
+    <nav><a href="#s1"><span class="dot"></span>Key metrics</a><a href="#s2"><span class="dot"></span>Conversion funnel</a><a href="#s3"><span class="dot"></span>Performance by {U}</a><a href="#s4"><span class="dot"></span>Recommendations</a></nav>
     <div class="foot">{FOOT}</div>
   </aside>
   <main class="main">
@@ -142,19 +153,19 @@ def report(c):
 <div class="srow"><div class="lab">Spend</div><div class="tr"><i style="width:{sp:.1f}%;background:#0A3A6B"></i></div><div class="vl">{sp:.1f}% <small>{money(s[8])}</small></div></div>
 <div class="srow"><div class="lab">Quote</div><div class="tr"><i style="width:{qs:.1f}%;background:#057BE5"></i></div><div class="vl">{qs:.1f}% <small>{s[6]} quote{'s' if s[6] != 1 else ''}</small></div></div></div>""")
     out.append(f"""<section class="block" id="s3">
-<div class="bhead"><span class="ix">03</span><div><h2>Performance by source</h2><p>{PERIOD}</p></div></div>
-<div class="stack"><div class="panel"><div class="pt">Leads by source</div>
+<div class="bhead"><span class="ix">03</span><div><h2>Performance by {U}</h2><p>{PERIOD}</p></div></div>
+<div class="stack"><div class="panel"><div class="pt">Leads by {U}</div>
 <div class="mix"><div class="donut"><svg viewBox="0 0 42 42" width="180" height="180"><circle cx="21" cy="21" r="15.915" fill="none" stroke="#EFF2F7" stroke-width="6"></circle>
 {chr(10).join(circles)}</svg>
 <div class="center"><div class="n">{L}</div><div class="l">leads</div></div></div>
 <div class="legend">{''.join(legend)}</div></div></div>
-<div class="panel"><div class="pt">Source results</div><table class="ctab stable"><thead><tr><th>Source</th><th>Ad shown</th><th>Clicks</th><th>Leads</th><th>Calls</th><th>Contacted</th><th>Quoted</th><th>Bound</th><th>Spend</th></tr></thead><tbody>
+<div class="panel"><div class="pt">{UC} results</div><table class="ctab stable"><thead><tr><th>{UC}</th><th>Ad shown</th><th>Clicks</th><th>Leads</th><th>Calls</th><th>Contacted</th><th>Quoted</th><th>Bound</th><th>Spend</th></tr></thead><tbody>
 {chr(10).join(rows)}</tbody>
 </table></div>
 <div class="panel"><div class="pt">Share of spend and share of quotes</div>
 <div class="keyrow"><span><i class="sw" style="background:#0A3A6B"></i>Spend share</span><span><i class="sw" style="background:#057BE5"></i>Quote share</span></div>
 {chr(10).join(pairs)}
-<div class="pnote">Sources with $20 or more in spend. Quote share is each source's quotes as a share of all {c['quoted']} quotes.</div></div>
+<div class="pnote">{"Sources with $20 or more in spend. " if unit == "source" else ""}Quote share is each {U}'s quotes as a share of all {c['quoted']} quotes.</div></div>
 </div>
 </section>
 """)
@@ -169,9 +180,9 @@ def report(c):
 <div class="b"><b>{L - c['contacted']} of {L} leads</b> ({pct(L - c['contacted'], L)}) have no recorded contact. Continued follow-up across phone, text and email applies to these leads.</div></div></div>
 <div class="pstep"><div class="num">3</div>
 <div><div class="h">Inbound calls</div>
-<div class="b">{c['calls']} inbound calls were attributed to this campaign. Answer and quote results for calls will be reported separately.</div></div></div></div>
+<div class="b">{c['calls']} inbound calls were attributed to {"the campaigns" if unit == "campaign" else "this campaign"}. Answer and quote results for calls will be reported separately.</div></div></div></div>
 </section>
-<div class="pnote" style="border-top:none;padding-top:10px;">Source: GOAL campaign and source-settings exports for {t}, campaign to date, pulled October 5, 2026. Lead outcomes reflect dispositions recorded in GOAL and cover web leads.</div>
+<div class="pnote" style="border-top:none;padding-top:10px;">Source: GOAL campaign and source-settings exports for {"Auto (TX) and Home (TX)" if unit == "campaign" else t}, campaign to date, pulled October 5, 2026. Lead outcomes reflect dispositions recorded in GOAL and cover web leads.</div>
   </main>
 </div>
 </body>
@@ -181,7 +192,7 @@ def report(c):
 
 
 def hub():
-    a, h = CAMPAIGNS["auto"], CAMPAIGNS["home"]
+    a, h, b = CAMPAIGNS["auto"], CAMPAIGNS["home"], BLENDED
     return head(f"{AGENCY} &middot; Performance Reports", "") + f"""<style>
 .main{{background:var(--gray);}}
 .package{{background:var(--off);border:1px solid var(--line);border-radius:16px;padding:30px 34px;margin-bottom:30px;}}
@@ -201,6 +212,7 @@ def hub():
 .rcard .pills span{{font-size:11.5px;font-weight:600;color:var(--body);background:var(--gray);border-radius:999px;padding:6px 12px;}}
 .rcard .open{{align-self:flex-start;font-size:14px;font-weight:700;color:var(--blue);text-decoration:none;}}
 .botnote{{margin-top:30px;font-size:12.5px;color:var(--muted);border-top:1px solid var(--line);padding-top:20px;}}
+.rcard.full{{grid-column:1/-1;}}
 @media(max-width:900px){{.grid{{grid-template-columns:1fr;}}}}
 </style>
 <body>
@@ -210,7 +222,7 @@ def hub():
     <div class="eb">Performance Reports</div>
     <h1>{AGENCY}</h1>
     <div class="who">{WHO}</div>
-    <nav><a href="#r1"><span class="dot"></span>Auto (TX) Performance Review</a><a href="#r2"><span class="dot"></span>Home (TX) Performance Review</a></nav>
+    <nav><a href="#r1"><span class="dot"></span>All Campaigns, Campaign to Date</a><a href="#r2"><span class="dot"></span>Auto (TX) Performance Review</a><a href="#r3"><span class="dot"></span>Home (TX) Performance Review</a></nav>
     <div class="foot">{FOOT}</div>
   </aside>
   <main class="main">
@@ -220,16 +232,24 @@ def hub():
       <p>Campaign-to-date results for the <b>Auto (TX)</b> and <b>Home (TX)</b> campaigns through <b>October 5, 2026</b>. Combined: {a['leads'] + h['leads']} leads, {a['calls'] + h['calls']} inbound calls, {a['contacted'] + h['contacted']} contacted, {a['quoted'] + h['quoted']} quoted, {a['bound'] + h['bound']} policies bound, on {money(a['spend'] + h['spend'])} ad spend.</p>
     </div>
     <div class="grid">
-      <div class="rcard" id="r1">
+      <div class="rcard full" id="r1">
         <div class="num">01</div>
+        <div class="tag">All Campaigns &middot; Campaign to Date</div>
+        <h3>Blended Performance Review</h3>
+        <p class="desc">{b['searches']:,} shopper searches, {b['leads']} leads, {b['calls']} inbound calls, {b['contacted']} contacted, {b['quoted']} quoted, and {b['bound']} policies bound on {money(b['spend'])} spend across Auto (TX) and Home (TX).</p>
+        <div class="pills"><span>Key metrics</span><span>Funnel</span><span>Auto vs Home</span></div>
+        <a class="open" href="reports/{b['slug']}.html">Open report &rarr;</a>
+      </div>
+      <div class="rcard" id="r2">
+        <div class="num">02</div>
         <div class="tag">Auto (TX) &middot; Campaign to Date</div>
         <h3>Auto Performance Review</h3>
         <p class="desc">{a['searches']:,} shopper searches, {a['leads']} leads, {a['contacted']} contacted, {a['quoted']} quoted, and {a['bound']} policies bound on {money(a['spend'])} spend.</p>
         <div class="pills"><span>Key metrics</span><span>Funnel</span><span>Source results</span></div>
         <a class="open" href="reports/{a['slug']}.html">Open report &rarr;</a>
       </div>
-      <div class="rcard" id="r2">
-        <div class="num">02</div>
+      <div class="rcard" id="r3">
+        <div class="num">03</div>
         <div class="tag">Home (TX) &middot; Campaign to Date</div>
         <h3>Home Performance Review</h3>
         <p class="desc">{h['searches']:,} shopper searches, {h['leads']} leads, {h['contacted']} contacted, {h['quoted']} quoted, and {h['bound']} policies bound on {money(h['spend'])} spend.</p>
@@ -246,9 +266,9 @@ def hub():
 
 
 if __name__ == "__main__":
-    for c in CAMPAIGNS.values():
+    for c in list(CAMPAIGNS.values()) + [BLENDED]:
         # integrity: source rows reconcile to the campaign totals
-        tot = [sum(s[i] for s in c["sources"]) + c["other"][i] for i in range(1, 9)]
+        tot = [sum(r[i] for r in c["sources"]) + c["other"][i] for i in range(1, 9)]
         exp = [c["impr"], c["clicks"], c["leads"], c["calls"], c["contacted"], c["quoted"], c["bound"], c["spend"]]
         assert all(abs(x - y) < 0.01 for x, y in zip(tot, exp)), (c["title"], tot, exp)
         open(f"reports/{c['slug']}.html", "w").write(report(c))
